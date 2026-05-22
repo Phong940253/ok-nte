@@ -9,6 +9,7 @@ from qfluentwidgets import FluentIcon
 from src import text_white_color
 from src.combat.BaseCombatTask import BaseCombatTask
 from src.heist_path.HeistPathA import HeistPathA
+from src.heist_path.gotoHeist import gotoHeist
 from src.Labels import Labels
 from src.tasks.NTEOneTimeTask import NTEOneTimeTask
 from src.tasks.trigger.SkipDialogTask import SkipDialogTask
@@ -77,6 +78,7 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
         self.instructions = INST
         self.paths = {
             "路径1": HeistPathA,
+            "寻路小吱": gotoHeist,
         }
         path_names = list(self.paths.keys())
         self.avoid_methods = [self.AVOID_METHOD_DASH, self.AVOID_METHOD_ATTACK]
@@ -130,7 +132,7 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
         self._interaction_watch_found = False
 
         self._round_label = ""
-        self._error_count = 0
+        self._count = 0
 
     def run(self):
         super().run()
@@ -145,25 +147,72 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
     def _run_loop(self):
         self._start_quick_pick_loop()
         self._round_label = ""
-        self._error_count = 0
+        self._count = 0
+        self.info_set("成功次数", 0)
         self.info_set("总方斯获取数", 0)
         self.info_set("总粉爪币获取数", 0)
-
-        count = 0
 
         total = int(self.config.get(self.CONF_LOOP_COUNT, 1))
         endless = total == 0
         skip_task = self.get_task_by_class(SkipDialogTask)
-        while endless or count < total:
-            count += 1
-            self._prepare_round(count, total, endless)
-
-            rewards = self._run_heist_round(skip_task)
-            if rewards is not None:
-                self._add_rewards_to_summary(*rewards)
-
+        while endless or self._count < total:
+            if self.wait_ocr(x=0.60, y=0.52, to_x=0.66, to_y=0.57, match=re.compile("小吱"), time_out=30):
+                self._prepare_round(self._count, total, endless)
+                rewards = self._run_heist_round(skip_task)
+                if rewards is not None:
+                    self._add_rewards_to_summary(*rewards)
+            elif self.wait_ocr(x=0.45, y=0.8, to_x=0.55, to_y=0.9, match=re.compile("进入游戏"), time_out=2.00) or self.wait_ocr(x=0.025, y=0.135, to_x=0.075, to_y=0.165, match=re.compile("适龄提示"), time_out=2.00):
+                self.log_info("检测到未进入游戏，进入游戏")
+                self.click(0.50, 0.70, down_time=0.15)
+                self.sleep(1.00)
+                self.click(0.50, 0.70, down_time=0.15)
+            else:
+                self.log_info("未检测到小吱，检测角色是否在大世界")
+                is_in_world, is_in_raid = self.in_world()
+                if is_in_world:
+                    self.log_info("当前在大世界中，将传送到粉爪总部附近的塔")
+                    self.click_nearest_map_teleport()
+                    self.wait_until(
+                        lambda: (
+                            self.is_in_team()
+                        ),
+                        pre_action=lambda: self.wait_click_ocr(x=0.750, y=0.870, to_x=0.836, to_y=0.917, match=re.compile("传送"), time_out=12.0) ,
+                        time_out=60,
+                        raise_if_not_found=True,
+                    )
+                    self.log_info("传送完成！")
+                    try:
+                        gotoHeist(self).run_path()
+                    except AbortException as e:
+                        self.log_warning(e)
+                        continue
+                elif is_in_raid:
+                    self.sleep(1.00)
+                    self.wait_click_ocr(x=0.5, y=0.6, to_x=0.7, to_y=0.7, match=re.compile("确认"), time_out=2.0)
+                    self.log_info("成功退出副本")
+                    continue
+            
             self.next_frame()
 
+    # 大世界检测
+    def in_world(self):
+        self.sleep(0.50)
+        self.send_key('esc', down_time=0.10)
+        self.sleep(0.50)
+        self.send_key('esc', down_time=0.10)
+        self.sleep(0.50)
+        self.click(0.50, 0.01, down_time=0.10)
+        self.sleep(0.50)
+        self.send_key('f5', down_time=0.10)
+        if self.wait_feature('f5_panel', time_out=8.00 , threshold=0.70):
+            self.send_key('esc', down_time=0.10)
+            self.sleep(0.50)
+            return True, False
+        elif self.wait_ocr(x=0.45, y=0.3, to_x=0.55, to_y=0.4, match=re.compile("确认退出"), time_out=2.0):
+            return False, True
+        else:
+            return False, False
+    
     def _start_quick_pick_loop(self):
         self.log_info("quick_pick_loop start")
         self.submit_periodic_task(0.01, self._quick_pick_loop)
@@ -172,11 +221,10 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
         self._dead_fighter_keys = []
         self._round_label = f"第 {count} 轮"
         round_text = "∞" if endless else f"{total}"
-
         self.info_set("轮次", f"{count} / {round_text}")
-        self.info_set("失败次数", self._error_count)
 
     def _add_rewards_to_summary(self, earnfcash, earnpcoin):
+        self.info_add("成功次数", 1)
         self.info_add("总方斯获取数", earnfcash)
         self.info_add("总粉爪币获取数", earnpcoin)
 
@@ -190,6 +238,7 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
             return None
 
         try:
+            self._count += 1
             self.run_path()
         except AbortException as e:
             self.log_warning(e)
@@ -351,7 +400,6 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
 
     def abort_heist(self):
         self.log_round_info("出现异常，将退出粉爪副本")
-        self._error_count += 1
 
         self.wait_until(
             lambda: (
