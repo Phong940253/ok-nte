@@ -581,6 +581,9 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
     def _quick_pick_loop(self):
         if self._should_stop_quick_pick_loop():
             return False
+        if self.executor.paused:
+            time.sleep(0.1)
+            return
 
         if self._quick_pick_event.is_set() and time.time() >= self._quick_pick_ready_at:
             if self.check_action_interval("quick_pick", self.QUICK_PICK_INTERVAL):
@@ -771,17 +774,39 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
             return not self.find_interac()
         return True
 
-    def loot_safes_while_walking(self, direction=None, time_out=10, hold=False):
+    def loot_safes_while_walking(
+        self, direction=None, min_walk_time=0, time_out=10, hold=False, send_pick=False
+    ):
         """边移动边处理沿途保险箱。
 
         发现撬锁交互提示时会暂停移动，等待撬锁完成后继续走。
+        `min_walk_time` 表示开始后至少移动多久再处理撬锁提示/启动 `send_pick`。
         `hold=True` 表示结束时保留方向键按下状态，交给后续路径处理。
         """
-        deadline = time.time() + time_out
+        start_time = time.time()
+        deadline = start_time + time_out
+        earliest_lock_pick_time = start_time + min_walk_time
+        pick_started = False
+
+        def wait_until_pick_time():
+            nonlocal pick_started
+            remaining = earliest_lock_pick_time - time.time()
+            if remaining > 0:
+                self.sleep(remaining)
+            if send_pick and not pick_started:
+                self.send_key_down("f")
+                pick_started = True
+
         if direction is not None:
             self.send_key_down(direction)
         while time.time() < deadline:
+            now = time.time()
+            if send_pick and not pick_started and now >= earliest_lock_pick_time:
+                self.send_key_down("f")
+                pick_started = True
             if self.find_one(Labels.heist_interac_lock_pick, vertical_variance=0.05):
+                if now < earliest_lock_pick_time:
+                    wait_until_pick_time()
                 lock_pick = time.time()
                 if direction is not None:
                     self.send_key_up(direction)
@@ -841,11 +866,11 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
                 self.sleep(0.30)
             ret = self.wait_until(
                 self.has_extract_panel,
-                pre_action=lambda: self.send_key("f", interval=1),
-                time_out=2.5,
+                pre_action=lambda: self.send_key("f", interval=2),
+                time_out=1.75,
             )
             if ret:
-                self.sleep(0.25)
+                self.sleep(0.30)
                 self.ensure_in_team()
             return ret
         else:

@@ -506,9 +506,11 @@ class HeistPathA(HeistPath):
         self.send_key_down("f")  # start pick
         self.sleep(0.11)
         self.send_key_down("a")
-        self.sleep(8.07)
+        self.sleep(3.00)
+        self.send_key("lshift") # x0.6
+        self.sleep(3.10)
         self.send_key_up("a")
-        self.sleep(0.11)
+        self.sleep(0.21)
         self.send_key_down("s")
         self.sleep(0.11)
         self.send_key_down("d")
@@ -526,7 +528,7 @@ class HeistPathA(HeistPath):
         self.send_key_up("w")
         self.sleep(0.11)
         self.send_key_down("d")
-        self.sleep(0.72)
+        self.sleep(0.52)
         self.send_key_up("d")
         self.sleep(0.59)
         self.send_key_down("s")
@@ -542,8 +544,7 @@ class HeistPathA(HeistPath):
         self.send_key_down("w")
         self.sleep(2.81)
         self.exit_state[1] = self.try_open_exit(direction="w")
-        if not self.exit_state[1]:
-            self.sleep(0.5)
+        # self.sleep(0.5)
 
     def lg2_wp1_remains(self):
         self.send_key_down("w")
@@ -577,7 +578,7 @@ class HeistPathA(HeistPath):
         self.send_key_down("d")
         self.sleep(0.2)
         self.send_key("lshift")
-        self.sleep(1.48)
+        self.sleep(1.43)
         self.send_key_up("d")
         self.switch_to_runner()
         self.sleep(0.11)
@@ -590,14 +591,12 @@ class HeistPathA(HeistPath):
         self.send_key_up("d")
         self.sleep(0.12)
         self.send_key_down("s")
-        self.sleep(0.2)
-        self.send_key("lshift")
-        self.sleep(1.65)
+        self.sleep(3.02)
         self.send_key_up("s")
         self.switch_to_runner()
         self.sleep(0.72)
         self.send_key_down("s")
-        self.sleep(6.30)
+        self.sleep(6.36)
         self.send_key_up("s")
         self.switch_to_runner()
         self.sleep(0.11)
@@ -606,7 +605,11 @@ class HeistPathA(HeistPath):
         self.send_key_up("d")
         self.sleep(0.23)
         self.switch_to_runner()
-        self.loot_safes_while_walking(direction="w", time_out=1.3, hold=True)  # 3.06
+        self.sleep(0.01)
+        self.send_key_up("f")  # end pick
+        self.loot_safes_while_walking(
+            direction="w", min_walk_time=0.8, time_out=1.3, hold=True, send_pick=True
+        )
         self.sleep(0.10)
         self.send_key_down("space")
         self.sleep(0.13)
@@ -763,6 +766,8 @@ class HeistPathA(HeistPath):
         self.send_key_up("d")
         self.sleep(0.11)
         self.send_key_up("f")  # end pick
+        self.sleep(0.11)
+        self.switch_to_runner()
         self.sleep(0.28)
         self.send_key_down("w")
         self.sleep(2.56)
@@ -772,8 +777,6 @@ class HeistPathA(HeistPath):
         self.sleep(1.57)
         self.exit_state[2] = self.try_open_exit(direction="w")
         self.sleep(0.40)
-        self.switch_to_runner()
-        self.sleep(0.5)
 
     def lg2_wp3_to_layzer_room(self):
         self.send_key_down("a")
@@ -1082,7 +1085,7 @@ class HeistPathA(HeistPath):
             self.sleep(0.06)
             self.send_key_up("space")
             self.sleep(0.26)
-            
+
         self.sleep(1.21)
         self.send_key_up("s")
         self.sleep(0.11)
