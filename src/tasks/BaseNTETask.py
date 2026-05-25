@@ -1003,7 +1003,7 @@ class BaseNTETask(BaseTask):
                 if not self.is_foreground():
                     self.bring_to_front()
                     self.sleep(3)
-                self.click(0.499, 0.865, after_sleep=3)
+                self.operate_click(0.499, 0.865, after_sleep=3)
                 return False
 
     def find_treasure(self):
