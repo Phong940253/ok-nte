@@ -80,7 +80,7 @@ class BaseNTETask(CharUIMixin, BaseTask):
         """
         if og.my_app is None:
             return
-        og.my_app.submit_periodic_task(delay, task, *args, **kwargs)
+        return og.my_app.submit_periodic_task(delay, task, *args, **kwargs)
 
     def _openvino_detect(self, frame, sync, box, threshold, force=False, mask_regions=None):
         if og.my_app is None:
