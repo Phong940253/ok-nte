@@ -39,11 +39,10 @@ class DarkTask(NTEOneTimeTask, BaseNTETask):
         while running:
 
             # 判断是否达到次数
-            if max_time > 0:
-                if current_time >= max_time:
-                    self.log_info("达到最大循环次数")
-                    running = False
-                    break
+            if max_time > 0 and current_time >= max_time:
+                self.log_info("达到最大循环次数")
+                running = False
+                break
 
             # 逻辑
             self.one_time()
@@ -71,18 +70,18 @@ class DarkTask(NTEOneTimeTask, BaseNTETask):
     
     def go(self):
         start_time = time.time()
+        try:
+            while True:
+                elapsed = time.time() - start_time
 
-        while True:
-            elapsed = time.time() - start_time
+                # 剩余时间
+                remain = 150 - elapsed
 
-            # 剩余时间
-            remain = 150 - elapsed
+                if remain <= 0:
+                    break
 
-            if remain <= 0:
-                break
-            
-            self.send_key_down('w')
-            self.send_key('space')
-            time.sleep(1)
-
-        self.send_key_up('w')
+                self.send_key_down('w')
+                self.send_key('space')
+                self.sleep(1)
+        finally:
+            self.send_key_up('w')
