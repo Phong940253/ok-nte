@@ -155,7 +155,9 @@ config = {
             "discord": "https://discord.gg/vVyCatEBgA",
             "sponsor": "https://ko-fi.com/bnanz",
             "share": "Download from https://github.com/BnanZ0/ok-nte",
+            "qq_group": "https://qm.qq.com/q/bIiSLoUTVS",
             "faq": "https://github.com/BnanZ0/ok-nte",
+            "qq_channel": "https://pd.qq.com/s/djmm6l44y",
         }
     },
     "about": """
@@ -200,7 +202,7 @@ config = {
         ["src.tasks.CoffeeTask", "CoffeeTask"],
         ["src.tasks.FishingTask", "FishingTask"],
         ["src.tasks.AnomalyTask", "AnomalyTask"],
-        ["src.tasks.RhythmTask", "RhythmTask"], 
+        ["src.tasks.RhythmTask", "RhythmTask"],
         ["src.tasks.ShopSpecialTask", "ShopSpecialTask"],
         ["src.tasks.AutoHeistTask", "AutoHeistTask"],
         # ["src.tasks.MyOneTimeWithAGroup", "MyOneTimeWithAGroup"],
