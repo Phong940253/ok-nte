@@ -158,9 +158,9 @@ or consequences are not associated with this software.
 
 ## 💬 社区与交流
 
-* **QQ 用户群**: `1105569444`
+* **QQ 用户群**: [1105569444](https://qm.qq.com/q/bIiSLoUTVS)
 * **QQ 开发者群**: `1087276729`
-* **QQ 频道**: [点击加入]()
+* **QQ 频道**: [点击加入](https://pd.qq.com/s/djmm6l44y)
 * **Discord**: [https://discord.gg/vVyCatEBgA](https://discord.gg/vVyCatEBgA)
 
 ## 🔗 使用[ok-script](https://github.com/ok-oldking/ok-script)开发的项目：
