@@ -615,14 +615,14 @@
         {
             "id": 35,
             "image_id": 15,
-            "category_id": 35,
+            "category_id": 59,
             "bbox": [
-                2457,
-                45,
-                57,
-                58
+                2458,
+                46,
+                55,
+                55
             ],
-            "area": 3306,
+            "area": 3025,
             "iscrowd": 0
         },
         {
@@ -706,7 +706,7 @@
         {
             "id": 42,
             "image_id": 19,
-            "category_id": 42,
+            "category_id": 35,
             "bbox": [
                 929,
                 126,
@@ -1098,7 +1098,7 @@
         },
         {
             "id": 35,
-            "name": "map_location_card",
+            "name": "fish_sucess",
             "supercategory": ""
         },
         {
@@ -1129,11 +1129,6 @@
         {
             "id": 41,
             "name": "stamina_icon",
-            "supercategory": ""
-        },
-        {
-            "id": 42,
-            "name": "fising_sucess",
             "supercategory": ""
         },
         {
@@ -1214,6 +1209,11 @@
         {
             "id": 58,
             "name": "map_city_tycoon_activities",
+            "supercategory": ""
+        },
+        {
+            "id": 59,
+            "name": "close_button",
             "supercategory": ""
         }
     ]
