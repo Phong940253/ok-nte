@@ -187,7 +187,7 @@ class FishingTask(NTEOneTimeTask, BaseNTETask):
                         self.log_warning("状态机运行超时")
                     raise WaitFailedException()
 
-                self.sleep(0.1)
+                self.sleep(0.05)
             except WaitFailedException:
                 retry_count += 1
                 if retry_count > self.FISHING_RETRY_LIMIT:
@@ -342,7 +342,7 @@ class FishingTask(NTEOneTimeTask, BaseNTETask):
             if self.is_in_team():
                 break
 
-            self.send_key("esc", interval=2, action_name="recover_fishing_scene")
+            self.send_key("esc", interval=0.5, action_name="recover_fishing_scene")
             self.sleep(0.1)
             if time.time() > deadline:
                 self.log_warning("恢复钓鱼准备界面超时")
@@ -420,7 +420,7 @@ class FishingTask(NTEOneTimeTask, BaseNTETask):
             time_out=time_out,
             pre_action=pre_action,
             post_action=post_action,
-            settle_time=1,
+            settle_time=0.2,
             raise_if_not_found=True,
         )
 
