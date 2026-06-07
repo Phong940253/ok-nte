@@ -2,7 +2,6 @@ name: "ok-nte"
 uac: true
 profiles:
   - name: "China"
-    git_url: "https://cnb.cool/BnanZ0/ok-nte-update.git"
     admin: true
     main_script: "main.py"
     requires_python: "3.12"
@@ -11,6 +10,5 @@ profiles:
     show_add_defender: true
 
   - name: "Global"
-    git_url: "https://github.com/BnanZ0/ok-nte-update.git"
     main_script: "main.py"
     requirements: "requirements.txt"
