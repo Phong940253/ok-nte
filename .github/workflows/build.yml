@@ -4,19 +4,18 @@ on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
-
     runs-on: windows-latest
 
     env:
-      PYTHONIOENCODING: 'UTF-8'
+      PYTHONIOENCODING: "UTF-8"
 
     strategy:
       matrix:
-        python-version: [ 3.12 ]
+        python-version: [3.12]
 
     permissions:
       actions: write
@@ -63,17 +62,17 @@ jobs:
               python -m unittest $_.FullName
           }
 
-      - name: Sync Repositories # 同步部分代码(deploy.txt中), 合并tag中间更新日志, 到更新库, 以减少用户更新使用的git库大小
-        id: sync   # Give the step an ID to access its outputs
-        uses: ok-oldking/partial-sync-repo@bbd55c1dffbcc1292a12295d949e7807b35ea93e # Replace with your action path
-        with:
-          repos: |
-            https://cnb:${{ secrets.CNB_GH }}@cnb.cool/BnanZ0/ok-nte-update.git
-            https://BnanZ0:${{ secrets.OK_GH }}@github.com/BnanZ0/ok-nte-update.git
-          sync_list: 'deploy.txt'
-          tag: ${{ github.ref_name }}
-          gitignore_file: '.update_repo_gitignore'
-          show_author: true #在更新日志中加入作者
+      # - name: Sync Repositories # 同步部分代码(deploy.txt中), 合并tag中间更新日志, 到更新库, 以减少用户更新使用的git库大小
+      #   id: sync   # Give the step an ID to access its outputs
+      #   uses: ok-oldking/partial-sync-repo@bbd55c1dffbcc1292a12295d949e7807b35ea93e # Replace with your action path
+      #   with:
+      #     repos: |
+      #       https://cnb:${{ secrets.CNB_GH }}@cnb.cool/BnanZ0/ok-nte-update.git
+      #       https://BnanZ0:${{ secrets.OK_GH }}@github.com/BnanZ0/ok-nte-update.git
+      #     sync_list: 'deploy.txt'
+      #     tag: ${{ github.ref_name }}
+      #     gitignore_file: '.update_repo_gitignore'
+      #     show_author: true #在更新日志中加入作者
 
       - name: Check release version
         id: release-version
