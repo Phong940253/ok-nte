@@ -72,6 +72,15 @@ jobs:
         with:
           build_exe_only: true # Chỉ đóng gói exe, không tạo file update
 
+      - name: Prepare Assets
+        if: steps.release-version.outputs.is_release == 'true'
+        shell: pwsh
+        run: |
+          if (Test-Path "pyappify_build/src-tauri/target/release/ok-nte.exe") {
+            mkdir pyappify_dist -ErrorAction SilentlyContinue
+            Copy-Item "pyappify_build/src-tauri/target/release/ok-nte.exe" "pyappify_dist/ok-nte-global.exe"
+          }
+
       - name: Release
         uses: softprops/action-gh-release@v3
         if: steps.release-version.outputs.is_release == 'true'
@@ -82,4 +91,6 @@ jobs:
           draft: false
           prerelease: false
           make_latest: true
-          files: pyappify_dist/*
+          files: |
+            pyappify_dist/*
+            pyappify_build/src-tauri/target/release/ok-nte.exe
