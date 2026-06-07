@@ -48,51 +48,50 @@ def _inst_line(text: str, color: str = "", *, bold: bool = False, indent: int = 
 def _inst_gap():
     return '<span style="font-size:4px;">&nbsp;</span>'
 
-
 INST = "<br>".join(
     [
-        _inst_line("📍 步骤起点：站在可互动小吱的位置开始", "#FF5555", bold=True),
-        _inst_line("⚙️ 镜头设置", "#FF5555", bold=True),
-        _inst_line("└─ 控制 ➔ 摄像机设置", "#FE821D", bold=True, indent=1),
-        _inst_line("├─ 移动镜头修正：禁用", "#FE821D", bold=True, indent=2),
-        _inst_line("└─ 按下锁定镜头回正：启用", "#FE821D", bold=True, indent=2),
-        _inst_line("⚠️ 必备条件：至少有一个复活道具", "#FF5555", bold=True),
-        _inst_line("🥷 避战方式：翳【长按 Shift】/ 浔【长按攻击】", "#FF5555", bold=True),
+        _inst_line("📍 Starting Point: Stand at the position of interactive Xiao Zhi to begin", "#FF5555", bold=True),
+        _inst_line("⚙️ Camera Settings", "#FF5555", bold=True),
+        _inst_line("└─ Controls ➔ Camera Settings", "#FE821D", bold=True, indent=1),
+        _inst_line("├─ Movement Camera Correction: Disabled", "#FE821D", bold=True, indent=2),
+        _inst_line("└─ Press to Lock Camera Reset: Enabled", "#FE821D", bold=True, indent=2),
+        _inst_line("⚠️ Prerequisite: At least one resurrection item", "#FF5555", bold=True),
+        _inst_line("🥷 Combat Avoidance: Sakiri [Hold Shift] / Hotori [Hold Attack]", "#FF5555", bold=True),
         _inst_gap(),
-        _inst_line("路径1推荐设置", bold=True),
+        _inst_line("Recommended Settings for Route 1", bold=True),
         _inst_line("FPS: 60~120", indent=1),
-        _inst_line("战斗角色: 主角 / 哈尼娅 / 浔", indent=1),
-        _inst_line("跑图角色: 薄荷", indent=1),
-        _inst_line("避战角色(可选): 翳 / 浔", indent=1),
+        _inst_line("Combat Characters: Zero / Nanally / Hotori", indent=1),
+        _inst_line("Exploration Character: Mint", indent=1),
+        _inst_line("Combat Avoidance Characters (Optional): Sakiri / Hotori", indent=1),
         _inst_gap(),
-        _inst_line("路径2推荐设置", bold=True),
-        _inst_line("画质：性能 | 分辨率: 1080P | FPS: 60 | 插帧: 关闭", indent=1),
-        _inst_line("跑图角色: 薄荷", indent=1),
-        _inst_line("早雾避战：", indent=1),
+        _inst_line("Recommended Settings for Route 2", bold=True),
+        _inst_line("Graphics: Performance | Resolution: 1080P | FPS: 60 | Frame Interpolation: Off", indent=1),
+        _inst_line("Exploration Character: Mint", indent=1),
+        _inst_line("Zhaowu Combat Avoidance:", indent=1),
         _inst_line(
-            "战斗角色: 早雾（必须，战斗角色中最前，其他战斗角色随意，可塞安魂曲） / 主角 / 哈尼娅",
+            "Combat Characters: Zhaowu (Required, must be at the front of combat characters. Others are optional, Requiem can be included) / Protagonist / Haniya",
             indent=2,
         ),
-        _inst_line("避战角色: 翳", indent=2),
-        _inst_line("浔避战：", indent=1),
-        _inst_line("战斗角色: 随意 (战斗角色随意，可塞安魂曲) / 主角 / 哈尼娅", indent=2),
-        _inst_line("避战角色: 浔", indent=2),
+        _inst_line("Combat Avoidance Character: Lacrimosa", indent=2),
+        _inst_line("Hotori Combat Avoidance:", indent=1),
+        _inst_line("Combat Characters: Optional (Any character, Requiem can be included) / Zero / Haniya", indent=2),
+        _inst_line("Combat Avoidance Character: Hotori", indent=2),
     ]
 )
 
 
 class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
-    CONF_LOOP_COUNT = "循环次数"
-    CONF_PATH = "路径"
-    CONF_FIGHTER = "战斗角色"
-    CONF_RUNNER = "跑图角色"
-    CONF_AVOIDER = "避战角色"
-    CONF_AVOID_MTH = "避战方法"
+    CONF_LOOP_COUNT = "Loop Count"
+    CONF_PATH = "Path"
+    CONF_FIGHTER = "Fighter"
+    CONF_RUNNER = "Runner"
+    CONF_AVOIDER = "Avoider"
+    CONF_AVOID_MTH = "Avoid Method"
     ROLE_FIGHTER = "fighter"
     ROLE_RUNNER = "runner"
     ROLE_AVOIDER = "avoider"
-    AVOID_METHOD_DASH = "长按shift"
-    AVOID_METHOD_ATTACK = "长按攻击"
+    AVOID_METHOD_DASH = "Hold Shift"
+    AVOID_METHOD_ATTACK = "Hold Attack"
     LOCK_PICK_MATCH_THRESHOLD = 0.75
     DEFAULT_SLEEP_CHECK_INTERVAL = 1
     SLEEP_CHECK_INTERVAL = 0.1
@@ -102,14 +101,14 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.name = "自动粉爪大劫案"
+        self.name = "Auto Pink Paws Heist"
         self.icon = FluentIcon.SHOPPING_CART
-        self.group_name = "都市闲趣"
+        self.group_name = "Hobbies"
         self.instructions = INST
-        self.supported_languages = ["zh_CN", "zh_TW"]
+        self.supported_languages = ["zh_CN", "zh_TW", "en_US"]
         self.paths = {
-            "路径1(路线参考自B站UP: 早柚大魔王丶)": HeistPathA,
-            "路径2(在路径1基础上优化了大厅到办公层的路线)": HeistPathB,
+            "Route 1 (Reference from Bilibili: ZaoYouDaMoWang)": HeistPathA,
+            "Route 2 (Optimized path from Lobby to Office)": HeistPathB,
         }
         path_names = list(self.paths.keys())
         self.avoid_methods = [self.AVOID_METHOD_DASH, self.AVOID_METHOD_ATTACK]
@@ -125,11 +124,11 @@ class AutoHeistTask(NTEOneTimeTask, BaseCombatTask):
         )
         self.config_description.update(
             {
-                self.CONF_LOOP_COUNT: "循环次数, 设置为0则一直运行",
-                self.CONF_PATH: "使用任何路径前请先阅读使用说明",
-                self.CONF_FIGHTER: "选1~2个",
-                self.CONF_RUNNER: "选1个",
-                self.CONF_AVOIDER: "选0~1个",
+                self.CONF_LOOP_COUNT: "Loop count, 0 for endless",
+                self.CONF_PATH: "Read instructions before changing path",
+                self.CONF_FIGHTER: "Select 1-2",
+                self.CONF_RUNNER: "Select 1",
+                self.CONF_AVOIDER: "Select 0-1",
             }
         )
 
